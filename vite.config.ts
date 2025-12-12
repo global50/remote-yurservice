@@ -16,18 +16,14 @@ export default defineConfig({
     ? {
         outDir: 'dist',
         lib: {
-          entry: path.resolve(__dirname, 'src/components/yurservice/YurServicePage.tsx'),
+          entry: path.resolve(__dirname, 'src/index.ts'),
           name: 'YurServiceMicrofrontend',
           formats: ['es'],
           fileName: 'yurservice-microfrontend',
         },
         rollupOptions: {
-          external: ['react', 'react-dom'],
           output: {
-            globals: {
-              react: 'React',
-              'react-dom': 'ReactDOM',
-            },
+            inlineDynamicImports: true,
           },
         },
         minify: 'terser',
