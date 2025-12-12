@@ -6,6 +6,11 @@ const isLibraryBuild = process.env.BUILD_MODE === 'library';
 
 export default defineConfig({
   plugins: [react()],
+  define: {
+    'process.env.NODE_ENV': JSON.stringify('production'),
+    'process.env': '{}',
+    'global': 'globalThis',
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -15,15 +20,29 @@ export default defineConfig({
   build: isLibraryBuild
     ? {
         outDir: 'dist',
+        cssCodeSplit: false,
+        cssMinify: true,
         lib: {
           entry: path.resolve(__dirname, 'src/index.ts'),
           name: 'YurServiceMicrofrontend',
-          formats: ['es'],
-          fileName: 'yurservice-microfrontend',
+          formats: ['umd'],
+          fileName: (format) => `yurservice-microfrontend.umd.js`,
         },
         rollupOptions: {
+          external: ['react', 'react-dom'],
           output: {
             inlineDynamicImports: true,
+            format: 'umd',
+            globals: {
+              'react': 'React',
+              'react-dom': 'ReactDOM',
+            },
+            assetFileNames: (assetInfo) => {
+              if (assetInfo.name === 'style.css') {
+                return 'yurservice-microfrontend.umd.css';
+              }
+              return assetInfo.name || 'asset';
+            },
           },
         },
         minify: 'terser',
@@ -36,6 +55,12 @@ export default defineConfig({
       }
     : {
         outDir: 'dist',
+        rollupOptions: {
+          output: {
+            format: 'es',
+            inlineDynamicImports: true,
+          },
+        },
         minify: 'terser',
         terserOptions: {
           compress: {

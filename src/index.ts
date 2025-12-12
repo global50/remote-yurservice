@@ -1,3 +1,5 @@
+import './index.css'
+
 export { YurServicePage } from './components/yurservice/YurServicePage'
 export { ResourceCard } from './components/yurservice/ResourceCard'
 export { RegionSelect } from './components/yurservice/RegionSelect'
